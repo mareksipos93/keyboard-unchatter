@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 
 namespace KeyboardUnchatter
@@ -60,6 +58,7 @@ namespace KeyboardUnchatter
             }
             
             var key = _keyStatusList.GetKey(keyPress.KeyCode);
+            var unchatterDisabled = Properties.Settings.Default.disabledKeys.Contains(keyPress.Key.ToString());
 
             if (keyPress.Status == InputHook.KeyStatus.Down)
             {
@@ -69,7 +68,8 @@ namespace KeyboardUnchatter
                 if (lastPressStatus == KeyStatusList.PressStatus.Up &&  key.IsBlocked)
                 {
                     Debug.Log("Key"+ key.KeyCode+" is blocked. Discarding");
-                    return false;
+                    if (!unchatterDisabled)
+                        return false;
                 }
 
                 double timeSpan = key.GetLastPressTimeSpan();
@@ -77,9 +77,12 @@ namespace KeyboardUnchatter
                 if(timeSpan < _chatterTimeMs)
                 {
                     Debug.Log("Key" + key.KeyCode + " timeSpawn is below limit. Blocking");
-                    key.Block();
                     RegisterChatterPress(keyPress.Key);
-                    return false;
+                    if (!unchatterDisabled)
+                    {
+                        key.Block();
+                        return false;
+                    }
                 }
             }
 
@@ -94,7 +97,8 @@ namespace KeyboardUnchatter
                 if (keyWasBlocked && key.GetBlockTimeSpan() < _chatterTimeMs)
                 {
                     Debug.Log("Key" + key.KeyCode + " was blocked");
-                    return false;
+                    if (!unchatterDisabled)
+                        return false;
                 }
                 else
                 {

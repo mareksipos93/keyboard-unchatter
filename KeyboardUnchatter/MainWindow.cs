@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace KeyboardUnchatter
 {
@@ -149,6 +142,21 @@ namespace KeyboardUnchatter
             Properties.Settings.Default.Save();
         }
 
+        private void OnDisabledCheckBox(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == this.Disabled.Index)
+            {
+                var cell = this._mainDataGrid[e.ColumnIndex, e.RowIndex];
+                var isChecked = !(bool)cell.Value;
+                cell.Value = isChecked; // Toggle checkbox manually, datagrid is in programmatic edit mode
+                string pressedKey = this._mainDataGrid.Rows[e.RowIndex].Cells[1].Value.ToString();
+                if (isChecked)
+                    Properties.Settings.Default.disabledKeys.Add(pressedKey);
+                else
+                    Properties.Settings.Default.disabledKeys.Remove(pressedKey);
+                Properties.Settings.Default.Save();
+            }
+        }
 
         private void DataSortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {

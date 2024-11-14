@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace KeyboardUnchatter
@@ -84,25 +80,28 @@ namespace KeyboardUnchatter
         private void UpdateGridCell(KeyData keyData)
         {
             bool cellUpdated = false;
+            var keyPressed = keyData.Key.ToString();
+            var keyDisabled = Properties.Settings.Default.disabledKeys.Contains(keyPressed);
+            int press = keyData.KeyPressedCount;
+            int block = keyData.KeyBlockedCount;
+            var percentage = Math.Floor((float)block / (float)press * 100).ToString() + "%";
+
             for (int a = 0; a < _dataGrid.Rows.Count; ++a)
             {
                 var row = _dataGrid.Rows[a];
+                var keyColumnCell = row.Cells[1];
 
-                if (row.Cells[0].Value != null && row.Cells[0].Value.ToString() == keyData.Key.ToString())
+                if (keyColumnCell.Value != null && keyColumnCell.Value.ToString() == keyPressed)
                 {
-                    int press = keyData.KeyPressedCount;
-                    int block = keyData.KeyBlockedCount;
-
-                    _dataGrid.Rows[a].SetValues(new string[] { keyData.Key.ToString(), press.ToString(), block.ToString(), (Math.Floor((float)block/(float)press*100)).ToString() +"%" });
+                    _dataGrid.Rows[a].SetValues(new object[] { keyDisabled, keyPressed, press.ToString(), block.ToString(), percentage});
                     cellUpdated = true;
+                    break;
                 }
             }
 
             if (!cellUpdated)
             {
-                int press = keyData.KeyPressedCount;
-                int block = keyData.KeyBlockedCount;
-                _dataGrid.Rows.Add(new string[] { keyData.Key.ToString(), press.ToString(), block.ToString(), (Math.Floor((float)block / (float)press)*100).ToString() + "%" });
+                _dataGrid.Rows.Add(new object[] { keyDisabled, keyPressed, press.ToString(), block.ToString(), percentage });
             }
         }
     }

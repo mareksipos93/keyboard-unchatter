@@ -34,6 +34,7 @@
             this._statusPanelLabel = new System.Windows.Forms.Label();
             this._buttonActivate = new System.Windows.Forms.Button();
             this._mainDataGrid = new System.Windows.Forms.DataGridView();
+            this.Disabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Key = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PressCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ChatterCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -106,9 +107,10 @@
             this._mainDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this._mainDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._mainDataGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Key,
-            this.PressCount,
-            this.ChatterCount,
+                this.Disabled,
+                this.Key,
+                this.PressCount,
+                this.ChatterCount,
             this.FailureRate});
             this._mainDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this._mainDataGrid.Location = new System.Drawing.Point(6, 19);
@@ -118,6 +120,12 @@
             this._mainDataGrid.Size = new System.Drawing.Size(583, 204);
             this._mainDataGrid.TabIndex = 3;
             this._mainDataGrid.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.DataSortCompare);
+            this._mainDataGrid.CellContentClick += this.OnDisabledCheckBox;
+            //
+            // Disabled
+            //
+            this.Disabled.HeaderText = "Disable Unchattering";
+            this.Disabled.Name = "Disabled";
             // 
             // Key
             // 
@@ -322,6 +330,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem _exitMenuItem;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Disabled;
         private System.Windows.Forms.DataGridViewTextBoxColumn Key;
         private System.Windows.Forms.DataGridViewTextBoxColumn PressCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn ChatterCount;
